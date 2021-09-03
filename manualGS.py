@@ -4,36 +4,20 @@ This program was built to compare the accuracies on the dataset after excluding 
 created using newDataloader.py. 
 For each of these datasets, the program prints out the accuracies on the train and test sets. 
 The mainLoop() function is the main function that specifies the hyperparameters used during training. The accuracies reported below are for the following set of 
-parameters: learning rate = 0.0003, weight decay=0.003, batch size=50, number of epochs = 30, no noise. 
+parameters: learning rate = 0.0003, weight decay=0.003, batch size=50, number of epochs = 50, no noise. 
 """
 
-from newNet import newNet
+import numpy as np
 import torch 
 import torch.nn as nn   
 from torch.autograd import Variable
-import numpy as np
-from torch.optim import Adam    #importing an iptimizer
+from torch.optim import Adam    # an optimizer
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_recall_fscore_support
-
+from newNet import newNet
 from convNet import ConvNet
 import matplotlib.pyplot as plt
 from torch.utils.tensorboard import SummaryWriter
-
-loss_list = []
-iteration_list = []
-accuracy_list = []
-count = 0
-min_val_loss = np.Inf
-val_array = []
-correct = 0
-iter = 0
-count = 0
-iter_array = []
-loss_array = []
-total = 0
-accuracy_array = []
-
 
 
 # Device configuration
@@ -63,6 +47,10 @@ def addNoise(dataset, stdDev):
     return noisedData
 
 
+"""
+Splits the dataset into the train- and test- datasets. Note: the number 60000 has been chosen based on the size of the dataset we were working with. 
+
+"""
 def createTrainTestSplit(data):
     data = setNorm(data)   # normalize the data
     X_train = data[:60000]   
@@ -80,17 +68,14 @@ The main training function for our model. Randomizes dataset on each epoch and a
     noise: proportion of Gaussian noise with input standard deviation to dataset
     returns lists of accuracy at each epoch on training and test sets.
 """
-def trainModel(net, data, optimizer, loss_fn, num_epochs, noise, batch_size, implement_early_stop = False, printout = False):
-    trainAcc, testAcc = [], []
-    n_epochs_stop = 6
-    epochs_no_improve = 0
-    early_stop = False
-    min_val_loss = np.Inf
-    count, correct, iter, count, total = 0, 0, 0, 0, 0
-    teration_list, accuracy_list, loss_list, val_array, iter_array, loss_array, accuracy_array = [], [], [], [], [], [],[]
-    
-    writer = SummaryWriter()
+def trainModel(net, data, optimizer, loss_fn, num_epochs, noise, batch_size, printout = False, tensor_board = True):
+    trainAcc, testAcc = [], []  
+
+    if tensor_board:
+        writer = SummaryWriter()
+        
     X_train, Y_train, X_test, Y_test = createTrainTestSplit(data)
+    
     for epoch in range(num_epochs):
         if printout:
             print("\n Epoch: ", epoch)
@@ -131,10 +116,11 @@ def trainModel(net, data, optimizer, loss_fn, num_epochs, noise, batch_size, imp
         
         trainAcc.append(curr_trainAcc)
         testAcc.append(curr_testAcc)
-
-        writer.add_scalar("Loss/train", running_loss, epoch)
-        writer.add_scalar("trainAcc", curr_trainAcc, epoch)
-        writer.add_scalar("testAcc", curr_testAcc, epoch)
+        
+        if tensor_board:
+            writer.add_scalar("Loss/train", running_loss, epoch)
+            writer.add_scalar("trainAcc", curr_trainAcc, epoch)
+            writer.add_scalar("testAcc", curr_testAcc, epoch)
 
     return trainAcc, testAcc
     
@@ -180,32 +166,29 @@ def genScores(net, X_test, Y_test):
 
 
 
-def mainLoop(data, targets, learning_rate = 0.0003, weight_decay=0.003, batch_size=50, num_epochs = 30, noise = 0.0):
-    writer = SummaryWriter()
-    # Device configuration
-
-    # Hyper parameters
-    num_classes = 10
-    # Define the loss function and optimizer
+def mainLoop(data, targets,  num_classes = 10, learning_rate = 0.0003, weight_decay=0.003, batch_size=50, num_epochs = 30, noise = 0.0):
+    writer = SummaryWriter()  # uncomment this line to disable TensorBoard 
+    
+    # Defining the loss function and optimizer
     loss_fn = nn.CrossEntropyLoss()
-
     net = newNet(num_classes=num_classes,dropout=0.0).cuda(0)
     optimizer = Adam(net.parameters(), lr=learning_rate, weight_decay = weight_decay)
 
     trAcc, teAcc = trainModel(net, data, optimizer, loss_fn, num_epochs, noise, batch_size, implement_early_stop=True)
-    writer.flush()
+    writer.flush() # uncomment this line to disable TensorBoard 
     return trAcc, teAcc
+
 
 
 
 
 data = torch.load('/scratch/akazako1/10DigData_noO1O2.pt')   # location of the dataset 
 targets = torch.load('/scratch/akazako1/10DigTarg_noO1O2.pt')    
-trAcc, teAcc = mainLoop(data, targets, learning_rate = 0.0003, weight_decay=0.003, batch_size=50, num_epochs = 30, noise = 0)
+trAcc, teAcc = mainLoop(data, targets, learning_rate = 0.0003, weight_decay=0.003, batch_size=50, num_epochs = 50, noise = 0)
 print("train acc & test acc for dataset with O1, O2 removed is ", trAcc, teAcc)
 
-# Maximum accuracy:
-# Accuracy after 30 epoch
+# Maximum accuracy on the test set: 79.3% after 47 epoch
+# Maximum accuracy on the train set: 16.8% after 10 epoch
 
 
 data = torch.load('/scratch/akazako1/10DigData_noP7P8.pt')
@@ -213,9 +196,8 @@ targets = torch.load('/scratch/akazako1/10DigTarg_noP7P8.pt')
 trAcc, teAcc = mainLoop(data, targets, learning_rate = 0.0003, weight_decay=0.003, batch_size=50, num_epochs = 50, noise = 0)
 print("train acc & test acc for dataset with P7, P8 removed is ", trAcc, teAcc)
 
-
-# Maximum accuracy:
-# Accuracy after 30 epoch:
+# Maximum accuracy on the test set: 83.7% after 50 epoch
+# Maximum accuracy on the train set: 19.6% after 10 epoch
 
 
 data = torch.load('/scratch/akazako1/10DigData_noF7F8.pt')
@@ -223,8 +205,8 @@ targets = torch.load('/scratch/akazako1/10DigTarg_noF7F8.pt')
 trAcc, teAcc = mainLoop(data, targets, learning_rate = 0.0003, weight_decay=0.003, batch_size=50, num_epochs = 50, noise = 0)
 print("train acc & test acc for dataset with F7, F8 removed is ", trAcc, teAcc)
 
-# Maximum accuracy:
-# Accuracy after 30 epoch:
+# Maximum accuracy on the test set: 77.1% after 46 epoch
+# Maximum accuracy on the train set: 16.8% after 11 epoch
 
 
 data = torch.load('/scratch/akazako1/10DigData_noAF3AF4.pt')
@@ -232,8 +214,8 @@ targets = torch.load('/scratch/akazako1/10DigTarg_noAF3AF4.pt')
 trAcc, teAcc = mainLoop(data, targets, learning_rate = 0.0003, weight_decay=0.003, batch_size=50, num_epochs = 50, noise = 0)
 print("train acc & test acc for dataset with AF3, AF4 removed is ", trAcc, teAcc)
 
-# Maximum accuracy:
-# Accuracy after 30 epoch:
+# Maximum accuracy on the test set: 81.9% after 49 epoch
+# Maximum accuracy on the train set: 18.5% after 13 epoch
 
 
 data = torch.load('/scratch/akazako1/10DigData_noFC5FC6.pt')
@@ -241,8 +223,8 @@ targets = torch.load('/scratch/akazako1/10DigTarg_noFC5FC6.pt')
 trAcc, teAcc = mainLoop(data, targets, learning_rate = 0.0003, weight_decay=0.003, batch_size=50, num_epochs = 50, noise = 0)
 print("train acc & test acc for dataset with FC5, FC6 removed is ", trAcc, teAcc)
 
-# Maximum accuracy:
-# Accuracy after 30 epoch
+# Maximum accuracy on the test set: 82.9% after 48 epoch
+# Maximum accuracy on the train set: 18.4% after 10 epoch
 
 
 data = torch.load('/scratch/akazako1/10DigData_noT7T8.pt')
@@ -250,8 +232,8 @@ targets = torch.load('/scratch/akazako1/10DigTarg_noT7T8.pt')
 trAcc, teAcc = mainLoop(data, targets, learning_rate = 0.0003, weight_decay=0.003, batch_size=50, num_epochs = 50, noise = 0)
 print("train acc & test acc for dataset with T7, T8 removed is ", trAcc, teAcc)
 
-# Maximum accuracy:
-# Accuracy after 30 epoch
+# Maximum accuracy on the test set: 77.0% after 48 epoch
+# Maximum accuracy on the train set: 18.2% after 15 epoch
 
 
 data = torch.load('/scratch/akazako1/10DigData_noF3F4.pt')
@@ -259,5 +241,5 @@ targets = torch.load('/scratch/akazako1/10DigTarg_noF3F4.pt')
 trAcc, teAcc = mainLoop(data, targets, learning_rate = 0.0003, weight_decay=0.003, batch_size=50, num_epochs = 50, noise = 0)
 print("train acc & test acc for dataset with F3, F4 removed is ", trAcc, teAcc)
 
-# Maximum accuracy:
-# Accuracy after 30 epoch:
+# Maximum accuracy on the test set: 79.3% after 49 epoch
+# Maximum accuracy on the train set: 18.7% after 12 epoch
