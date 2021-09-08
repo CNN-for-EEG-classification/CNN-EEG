@@ -15,3 +15,12 @@ The aim of this project is to build a Convolutional Neural Network (CNN) model f
 * `manualGS.py`: The pipeline for training and testing the muplticlass classifier models. The script is designed in a way that makes it easier to compare the perfomance metrics for models built on different versions of the dataset (in our case, datasets with different pairs of symmetrical channels excluded). Detailed instructions on how to run the model are provided in the script file.
 * `runNet.py` : The pipeline for running the autoencoder-classifier hybrid net. The script is modified to allow for the loss of both the autoencoder and the classifier to be combined for backpropagation.
 * `hybridNet.py` : An alternative to convNet. The network is both an autoencoder and classifier, with the classifier using the latent space representation from the autoencoder as the input for classification. Using this hybrid architecture approach, we found that a marginal improvement to overall test set accuracy was possible.
+
+
+<p float="center">
+  <img src="convnetSVG.PNG" width="40%" />
+  <img src="latNetDiag.PNG" width="30%" />
+  <img src="https://i.imgur.com/9Yh299T.giff" width="20%" />
+  <br>
+    <em> The basic structure of the convNet class. All other networks were derivatives of convNet. </em>
+ </p>
