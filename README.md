@@ -1,12 +1,9 @@
-# CNN-EEG
-Applying Convolutional Neural Networks to EEG signal Analysis
+# CNN-EEG: Applying Convolutional Neural Networks to EEG signal Analysis
 
-
-
-
+### Summary
 The aim of this project is to build a Convolutional Neural Network (CNN) model for processing and classification of a multi-electrode electroencephalography (EEG) signal. This model was designed for incorporating EEG data collected from 7 pairs of symmetrical electrodes. The MindBigData EPOH dataset (can be downloaded from **[here](http://mindbigdata.com/opendb/MindBigData-EP-v1.0.zip)**, 2,66 GB) was used to train the models. This projects presents architectures for a multiclass (10) and binary (one-versus-all) classifiers. We used Pytorch API for bulding the CNN and the Scikit-learn library to supplement our data processing and performance analysis methods. 
 
-
+### Code
 * `dataLoader.py`: The dataloader that creates a Pytorch compatible tensor from the raw tab-separated txt file. Dataloader has to be ran to produce a tensor that would then be used as an input for one of 4 CNN models (convNet, lowKernelNet, thinNet, or thinNet).
 * `dataLoaderNew.py`: An updated version of the dataloader that was created to streamline the process of creating the custom datasets, where one (or multiple) pairs of symmertrical channels was excluded from the original dataset. The rationale behind doing that was to check whether reducing the input size (the number of channels per example) would help to fight overfitting. 
 * `convNet.py`: the main 6-layer CNN architechture
@@ -17,6 +14,11 @@ The aim of this project is to build a Convolutional Neural Network (CNN) model f
 * `hybridNet.py` : An alternative to convNet. The network is both an autoencoder and classifier, with the classifier using the latent space representation from the autoencoder as the input for classification. Using this hybrid architecture approach, we found that a marginal improvement to overall test set accuracy was possible.
 
 
+
+## TODO: summary of methods 
+
+
+### CNN architecture
 <p float="center">
   <img src="convnetSVG.PNG" width="50%" />
   <img src="latNetDiag.PNG" width="40%" />
