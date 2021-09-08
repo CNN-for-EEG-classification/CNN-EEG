@@ -28,7 +28,7 @@ Due to the difficulty of our dataset, all network architectures we tried had a s
 
 <p float="center">
   <img src="convnetDrop0WD3e-3Noise0.PNG" width="50%" />
-  <img src="convnetDrop0WD3e-3Noise0.1.PNG" width="40%" />
+  <img src="convnetDrop0WD3e-3Noise01.PNG" width="40%" />
   <br>
     <em> ConvNet trained with no noise and with noise of std. dev. 0.1. </em>
  </p>
