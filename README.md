@@ -32,3 +32,7 @@ Due to the difficulty of our dataset, all network architectures we tried had a s
   <br>
     <em> ConvNet trained with no noise and with noise of std. dev. 0.1. </em>
  </p>
+
+
+### Channel exclusion as a way to combat overfitting 
+Reducing an input size could be one of the strategies for addressing the issue of overfitting. In our case, input size can be reduced by excluding several pairs of symmetrical channels. We created a custom data loader (dataLoaderNew.py) that allows us to create custom datasets containing fewer than 14 channels and a pipeline for evaluating the performance of these datasets (manualGS.py). Removing one pair of symmetrical channels at a time (which, in our case, implied reducing the input size by 1/7) narrowed the gap between the train and test set accuracies. After 30 epoch, the accuracies on the train sets got lower, while the accuracies on the test sets either remained unchanged or increased, which indicates that we were able to achieve a slight reduction in overfitting. 
