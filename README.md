@@ -27,7 +27,7 @@ The aim of this project is to build a Convolutional Neural Network (CNN) model f
 Due to the difficulty of our dataset, all network architectures we tried had a strong tendency to begin overfitting. To combat this, we used several regularization methods. Below is the results of using data noising, where noise of the given std. dev. was added to each input channel. While noising curtailed overfitting, it also made our already noisy data that much more difficult for the network to learn, and so test set accuracy does not improve dramatically.
 
 <p float="center">
-  <img src="convnetDrop0WD3e-3Noise0.PNG" width="50%" />
+  <img src="convnetDrop0WD3e-3Noise0.PNG" width="40%" />
   <img src="convnetDrop0WD3e-3Noise01.PNG" width="40%" />
   <br>
     <em> ConvNet trained with no noise and with noise of std. dev. 0.1. </em>
