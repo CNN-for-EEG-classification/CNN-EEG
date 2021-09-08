@@ -18,9 +18,8 @@ The aim of this project is to build a Convolutional Neural Network (CNN) model f
 
 
 <p float="center">
-  <img src="convnetSVG.PNG" width="40%" />
-  <img src="latNetDiag.PNG" width="30%" />
-  <img src="https://i.imgur.com/9Yh299T.giff" width="20%" />
+  <img src="convnetSVG.PNG" width="50%" />
+  <img src="latNetDiag.PNG" width="50%" />
   <br>
     <em> The basic structure of the convNet class. All other networks were derivatives of convNet. </em>
  </p>
