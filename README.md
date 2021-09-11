@@ -15,13 +15,12 @@ The aim of this project is to build a Convolutional Neural Network (CNN) model f
 
 
 #### Requirements
-Python 3.7 
-Pytorch 1.8
-NumPy
-Pandas
-matplotlib
-scikit-learn
-torch.utils
+* Python 3.7 
+* Pytorch 1.8
+* NumPy
+* Pandas
+* matplotlib
+* scikit-learn
 
 
 ### CNN architecture
