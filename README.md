@@ -14,14 +14,19 @@ The aim of this project is to build a Convolutional Neural Network (CNN) model f
 * `hybridNet.py` : An alternative to convNet. The network is both an autoencoder and classifier, with the classifier using the latent space representation from the autoencoder as the input for classification. Using this hybrid architecture approach, we found that a marginal improvement to overall test set accuracy was possible.
 
 
+#### Requirements
+Python 3.7 
 
-### Requirements
-Python 3.7
 Pytorch 1.8
+
 NumPy
+
 Pandas
+
 matplotlib
+
 scikit-learn
+
 torch.utils
 
 
